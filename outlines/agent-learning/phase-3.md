@@ -1,4 +1,4 @@
-# Phase 3 · 通用 Agent + 框架对比 + Hermes 精读（Week 8–11）
+# Phase 3 · 通用 Agent + 框架对比 + Hermes 精读（Week 8–12）
 
 > 目标：从 coding 场景抽身，理解 Mastra / deepagentsjs / Stagehand 等 TS 原生 agent 框架；精读 Hermes Agent 源码与设计思想；动手写一个简化版 Hermes SKILL 闭环。
 
@@ -19,12 +19,13 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 ## 前置条件与时间预算
 
 - **前置**：Phase 2 自检全过；`mini-agent-v2` 能用
-- **时间**：Week 8–11 每周 7–8h，合计 ≈ 30h
+- **时间**：Week 8–12，每周 5–8h（Week 12 是 mini-week 只 5h），合计 ≈ 35h
 - **交付**：
   - `notes/phase-3/research-agent-mastra/`（Mastra 版研究 agent）
   - `notes/phase-3/research-agent-deepagents/`（deepagentsjs 版）
   - `notes/phase-3/hermes-skill-mvp/`（你自己的 Hermes SKILL 闭环原型）
   - `notes/phase-3/framework-choice.md`（框架选型决策树）
+  - `notes/phase-3/protocols-comparison.md`（MCP / ACP / A2A 三协议横向对比 + ACP demo）
 
 ---
 
@@ -34,6 +35,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 2. 能用决策树解释"什么场景选 Mastra、什么场景选 LangGraph-js、什么场景自己手搓"
 3. 能读懂 Hermes 的五层记忆架构，并实现一个简化版
 4. 理解 Stagehand 的 `act/extract/observe` 三原语为什么是浏览器 agent 的突破
+5. 能说出 MCP、ACP、A2A 三个 agent 协议各自解决什么问题、谁是 tool 层谁是 agent 层、当前标准化进展到哪
 
 ---
 
@@ -230,6 +232,91 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 
 ---
 
+## Week 12 · 协议与互操作性（mini-week, 5h）
+
+> 这周不写大代码、不读大论文。目的只有一个：**建立 agent 通信协议层的坐标系**，知道 2026 年地图上有哪几面旗、各自插在哪。
+>
+> 为什么单独留一周：这一层 2025–2026 还在标准战阶段，不学的代价不是"现在做不出 agent"，而是**6 个月后看到 ACP / A2A / Microsoft Agent Framework 的争论时完全跟不上**。
+
+### 任务 17：MCP 复盘（0.5 小时）
+
+- **类型**：复盘
+- **做什么**：你前面已经在 Phase 2（hello-claw / Cline）和 Phase 4（MCP 安全）多次接触 MCP，这里只做一件事——**用一句话写下"MCP 是什么、解决什么、不解决什么"**
+- **产出**：`notes/phase-3/protocols-comparison.md` 第一节 `## MCP（tool 层）`
+- **关键认知**：MCP 是 **agent ↔ tool / data source** 的标准化，**不是** agent ↔ agent
+
+---
+
+### 任务 18：ACP 官方文档（1.5 小时）
+
+- **类型**：核心阅读
+- **资源**（**只看一手源**）：
+  - 官方站点：https://agentcommunicationprotocol.dev/
+  - GitHub 主仓：https://github.com/i-am-bee/acp
+  - BeeAI 平台（ACP 主要推动者，IBM Research 孵化）：https://beeai.dev/
+  - 规范文档（spec）：在官方站点的 `Specification` 标签下
+- **做什么**：
+  1. 读官方 "Why ACP / What is ACP" 一章
+  2. 抓三个核心概念：**Agent Manifest**（agent 自描述）、**Run / Message** 抽象、**Stateful vs Stateless** 模式
+  3. 弄清 ACP 与 MCP 的关系：**ACP 复用 MCP 的传输层（JSON-RPC over HTTP/SSE/stdio），但定义 agent ↔ agent 语义**
+- **产出**：`protocols-comparison.md` 第二节 `## ACP（agent 层 / IBM 系）`
+
+---
+
+### 任务 19：A2A 官方文档（1 小时）
+
+- **类型**：核心阅读
+- **资源**（**只看一手源**）：
+  - 官方站点：https://a2aproject.github.io/A2A/
+  - GitHub 主仓：https://github.com/a2aproject/A2A
+  - Google Cloud 公告：https://cloud.google.com/blog/products/ai-machine-learning/a2a-a-new-era-of-agent-interoperability
+- **做什么**：
+  1. 读 "Concepts" 一节
+  2. 抓三个核心概念：**Agent Card**（A2A 版的 manifest）、**Task / Message / Artifact**、**Push Notifications**
+  3. 弄清 A2A 与 ACP 的差异：**A2A 由 Google + Linux Foundation 推动，长任务异步通信是核心；ACP 更轻、和 MCP 复用栈**
+- **产出**：`protocols-comparison.md` 第三节 `## A2A（agent 层 / Google 系）`
+
+---
+
+### 任务 20：协议横向对比 + 最小 demo（2 小时）
+
+- **类型**：动手 + 总结
+- **做什么**：
+  1. **对比表**（写到 `protocols-comparison.md`）：
+     - 维度：层次 / 推动方 / 传输 / 状态模型 / 生态成熟度 / 核心抽象 / 我会在什么场景下用
+     - 行：MCP / ACP / A2A / 自己手搓 HTTP
+  2. **最小 demo**（二选一，重点是亲手跑过一次，**不追求完整功能**）：
+     - **A 选项（推荐）**：clone `i-am-bee/acp`，跑通其中 `examples/` 下任意一个 TS 示例（一个最小的 ACP server + client 互发消息）
+     - **B 选项**：clone `a2aproject/a2a-samples`（https://github.com/a2aproject/a2a-samples），跑通其中一个 hello-world
+  3. 把跑通的 demo 放到 `notes/phase-3/protocols-demo/`，README 里写：
+     - 启动命令
+     - 一次完整 message 的请求/响应 JSON 截图
+     - 你观察到的"和 MCP 最大的不同点"3 条
+- **产出**：
+  - `notes/phase-3/protocols-comparison.md` 完整对比表 + 决策建议
+  - `notes/phase-3/protocols-demo/` 一个能跑的最小 demo
+
+---
+
+### 任务 21（可选）：Microsoft Agent Framework / AutoGen 合并背景（0.5 小时）
+
+- **类型**：阅读
+- **资源**：
+  - https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview
+  - 官方公告（AutoGen → MAF）：https://devblogs.microsoft.com/foundry/introducing-microsoft-agent-framework/
+- **做什么**：知道微软 2025 把 AutoGen 合并进 Microsoft Agent Framework，并且 MAF 同时**支持 MCP + A2A**——这是大厂对协议层的最新表态
+- **产出**：在 `protocols-comparison.md` 末尾加一行 `## 大厂动向：MAF 同时押注 MCP + A2A`
+
+---
+
+### 不要做的事
+
+- **不要试图实现自己的协议**：这一周的目的是建立坐标系，不是发明轮子
+- **不要陷入"哪个协议会赢"的争论**：当前没人知道，2026 中前看更清楚
+- **不要读中文"ACP/A2A 万字深度解读"**：这一层中文资料更稀薄、洗稿比例更高，**直接读官方英文文档**
+
+---
+
 ## 可选补充（时间富裕再做）
 
 - Vercel AI SDK agent 能力：https://strapi.io/blog/langchain-vs-vercel-ai-sdk-vs-openai-sdk-comparison-guide
@@ -256,21 +343,24 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 - [ ] `notes/phase-3/hermes-skill-mvp/`：简化版 Hermes SKILL 闭环，3 次实验有记录
 - [ ] `notes/phase-3/framework-choice.md`：框架选型决策树 + Mastra vs deepagentsjs 实测对比
 - [ ] `notes/phase-3/hermes-architecture.md`：你画的 Hermes 架构图
+- [ ] `notes/phase-3/protocols-comparison.md`：MCP / ACP / A2A 横向对比 + 决策建议
+- [ ] `notes/phase-3/protocols-demo/`：一个能跑的最小 ACP 或 A2A demo
 
 ---
 
-## 自检清单（进入 Phase 4 前必须全过）
+## 自检清单（进入 Phase 3.5 前必须全过）
 
 - [ ] 能说出 Mastra 的 Agent/Tool/Workflow/Memory 四件套分别解决什么
 - [ ] 能说出 deepagentsjs 的 `createDeepAgent` 底层在做什么
 - [ ] 能说出 Stagehand 的 `act/extract/observe` 相对于 Puppeteer/Playwright 的增量价值
 - [ ] 你的 Hermes SKILL MVP 第 3 次任务效率**可证明**地优于第 1 次
 - [ ] 能在"coding / research / browser / customer-service"四个场景下各推荐一个合适框架并给出理由
+- [ ] 能在 30 秒内向同事解释 MCP 和 ACP/A2A 不在同一层、各自解决什么
 
 ---
 
-## 过渡到 Phase 4
+## 过渡到 Phase 3.5
 
-Phase 4 要把你所有阶段的代码产出推向"生产级"：evals / observability / safety / 前沿跟踪。
+Phase 3.5 是企业 RAG 专题：把"agent 怎么和企业知识库结合"系统学一遍，是做通用业务 agent 绕不开的一环。
 
-进入 [`phase-4.md`](./phase-4.md)。
+进入 [`phase-3.5.md`](./phase-3.5.md)。

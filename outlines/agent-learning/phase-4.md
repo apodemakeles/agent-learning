@@ -1,23 +1,23 @@
-# Phase 4 · 生产级实践 + 前沿跟踪（Week 12–14）
+# Phase 4 · 生产级实践 + 前沿跟踪（Week 15–17）
 
-> 目标：把你积累的 mini-agent / research agent / Hermes MVP 推向"production-grade"——加 evals、加 observability、加 sandboxing；同时跟上 context rot、prompt injection 等 2025–2026 前沿。
+> 目标：把你积累的 mini-agent / research agent / Hermes MVP / enterprise-rag-agent 推向"production-grade"——加 evals、加 observability、加 sandboxing；同时跟上 context rot、prompt injection 等 2025–2026 前沿。
 
 ---
 
 ## 本阶段定位（30 秒读完）
 
-- **Week 12**：Evals（给 agent 写测试）
-- **Week 13**：Observability（把 agent 行为变可见）
-- **Week 14**：Safety & Sandboxing + Context Engineering 深化
+- **Week 15**：Evals（给 agent 写测试）
+- **Week 16**：Observability（把 agent 行为变可见）
+- **Week 17**：Safety & Sandboxing + Context Engineering 深化
 
-这三周的核心原则：**不要用新项目**，而是在你 Phase 1/2/3 已经写好的 mini-agent-v2 和 Hermes MVP 上加这三层。
+这三周的核心原则：**不要用新项目**，而是在你 Phase 1/2/3/3.5 已经写好的 mini-agent-v2、Hermes MVP、enterprise-rag-agent 上加这三层。Phase 3.5 已经写过 RAG eval 套件，Week 15 可直接复用并扩展。
 
 ---
 
 ## 前置条件与时间预算
 
-- **前置**：`mini-agent-v2` 能跑；`hermes-skill-mvp` 能跑；愿意在每个 agent 上加测试/监控/沙箱
-- **时间**：Week 12–14 每周 7–8h，合计 ≈ 25h
+- **前置**：`mini-agent-v2` / `hermes-skill-mvp` / `enterprise-rag-agent` 都能跑；愿意在每个 agent 上加测试/监控/沙箱
+- **时间**：Week 15–17 每周 7–8h，合计 ≈ 25h
 - **交付**：
   - `notes/phase-4/evals/`：给 mini-agent-v2 的 eval 套件（≥5 用例）
   - `notes/phase-4/observability/`：接上 Langfuse 的 agent，20 条 trace + 分析
@@ -36,7 +36,7 @@
 
 ---
 
-## Week 12 · Evals
+## Week 15 · Evals
 
 ### 任务 1：Anthropic《Demystifying evals for AI agents》（2 小时）
 
@@ -119,7 +119,7 @@
 
 ---
 
-## Week 13 · Observability
+## Week 16 · Observability
 
 ### 任务 7：Langfuse 官方 Get Started（1.5 小时）
 
@@ -192,7 +192,7 @@
 
 ---
 
-## Week 14 · Safety & Sandboxing + Context Engineering
+## Week 17 · Safety & Sandboxing + Context Engineering
 
 ### 任务 13：Anthropic Claude Code sandboxing（1 小时）
 
@@ -346,7 +346,7 @@
 
 ---
 
-## Week 15–16 弹性/收尾方向（4 选 1）
+## Week 18–19 弹性/收尾方向（4 选 1）
 
 这两周你可以选**一个方向**深挖，把所有阶段产出整合成一个有完整叙事的项目：
 
@@ -364,7 +364,7 @@
 
 ---
 
-## 贯穿始终的订阅 feed（从 Week 15 起进入"维护模式"）
+## 贯穿始终的订阅 feed（从 Week 18 起进入"维护模式"）
 
 ### 英文工程博客
 - **Anthropic Engineering**（每 1–2 周必看）：https://www.anthropic.com/engineering
@@ -408,7 +408,7 @@
 
 ---
 
-## 最终交付物清单（14 周结束时）
+## 最终交付物清单（17 周结束时）
 
 你应该有：
 
@@ -416,18 +416,22 @@
    - `mini-agent-v1/` 和 `mini-agent-v2/`
    - `research-agent-mastra/` 和 `research-agent-deepagents/`
    - `hermes-skill-mvp/`
+   - `protocols-demo/`（ACP 或 A2A 最小 demo）
+   - `enterprise-rag-agent/`（agentic RAG，含评估）
    - `sandbox/`（沙箱 + 审批）
    - `evals/` + `observability/`
 
 2. **一套笔记**（本仓库 `outlines/agent-learning/` 之外的 `notes/` 目录）：
-   - 阶段产出文档（6 份 markdown）
-   - 每周 150 字总结（14 份）
+   - 阶段产出文档（7+ 份 markdown）
+   - 每周 150 字总结（17 份）
    - feed-log（订阅精读记录）
 
 3. **一份自证理解的文档**：
    - `comparison.md`（Phase 2 成品）：6 个 coding agent 横向对比
    - `framework-choice.md`（Phase 3 成品）：通用 agent 框架选型决策树
    - `hermes-architecture.md`（Phase 3 成品）：自己画的 Hermes 架构图
+   - `protocols-comparison.md`（Phase 3 成品）：MCP / ACP / A2A 横向对比
+   - `rag-concepts.md` + `rag-evals/run-results.md`（Phase 3.5 成品）：企业 RAG 工程笔记 + 评估结果
    - `SECURITY.md`（Phase 4 成品）：lethal trifecta 自检
 
 完成这些之后，你在 AI Agent 开发领域的水平已经**显著超过 95% 的"懂 agent"的工程师**。

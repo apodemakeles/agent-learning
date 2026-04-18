@@ -1,4 +1,4 @@
-# AI Agent 开发学习路径（14–16 周）
+# AI Agent 开发学习路径（17–19 周）
 
 > 适用对象：已经自己手写过 ReAct 风格 tool-use 循环，想从 demo 走向**能设计 + 手搓 + 生产化** agent 的开发者。
 > 语言偏好：**文字中文优先（高质量英文可用），视频必须中文。**
@@ -21,9 +21,9 @@
 
 ## 1. 时间盘算
 
-- **总周数**：14–16 周（3.5–4 个月）
-- **每周预算**：7–8 小时（±2 小时弹性）
-- **总投入**：≈ 100–120 小时
+- **总周数**：17–19 周（4–4.5 个月）
+- **每周预算**：6–8 小时（±2 小时弹性，Week 12 是 mini-week 只 5h）
+- **总投入**：≈ 120–145 小时
 - **关键原则**：**每阶段必须有一次"能跑的代码产出"**，没跑起来就别进入下一阶段
 
 ### 周级主干进度表
@@ -34,8 +34,10 @@
 | **Week 2–3** | Phase 1 | 手搓 mini-agent（TS/Node） | `mini-agent-v1`：≤300 行 TS，支持 read/write/edit/bash 四工具 |
 | **Week 4–7** | Phase 2 | Coding Agent 深水区 | `mini-agent-v2`：加 subagent + `/compact` 压缩；一份对比报告 |
 | **Week 8–11** | Phase 3 | 通用 agent + 框架对比 | 两个迷你 research agent（Mastra 版 + deepagentsjs 版）+ Hermes SKILL 原型 |
-| **Week 12–14** | Phase 4 | 生产级实践 + 前沿 | mini-agent 接上 Langfuse + Evals + 沙箱；5 个失败样本分析 |
-| **Week 15–16** | 弹性/收尾 | 复盘 + 选一个方向深挖 | 你自己的综合项目（选题见 Phase 4 末尾） |
+| **Week 12** | Phase 3 (mini) | 协议与互操作性 | MCP / ACP / A2A 横向对比 + 一个最小 ACP 或 A2A demo |
+| **Week 13–14** | Phase 3.5 | 企业 RAG + agentic retrieval | `enterprise-rag-agent`（TS）+ ≥10 条评估数据 + 失败分析 |
+| **Week 15–17** | Phase 4 | 生产级实践 + 前沿 | mini-agent 接上 Langfuse + Evals + 沙箱；5 个失败样本分析 |
+| **Week 18–19** | 弹性/收尾 | 复盘 + 选一个方向深挖 | 你自己的综合项目（选题见 Phase 4 末尾） |
 
 ---
 
@@ -54,8 +56,9 @@
 - **Phase 0（Week 1）**：弄清楚"agent / workflow / context engineering / multi-agent"这四个词的行业共识，不再凭感觉用词
 - **Phase 1（Week 2–3）**：用 TS 从零写一个 <300 行能真跑小 refactor 任务的 coding agent
 - **Phase 2（Week 4–7）**：读懂 Cline / opencode / Claude Code 比 mini-agent 多做了什么，把 subagent 和 `/compact` 接上
-- **Phase 3（Week 8–11）**：从 coding 场景抽身，理解 Mastra / deepagentsjs / Stagehand，用 Hermes 的思想实现一个简化 SKILL 闭环
-- **Phase 4（Week 12–14）**：给你的 agent 接上 evals / observability / 沙箱，并跟上 context rot、prompt injection 这些 2025–2026 前沿
+- **Phase 3（Week 8–12）**：从 coding 场景抽身，理解 Mastra / deepagentsjs / Stagehand，用 Hermes 的思想实现一个简化 SKILL 闭环；末尾用一个 mini-week 建立 MCP / ACP / A2A 协议层的坐标系
+- **Phase 3.5（Week 13–14）**：把"agent + 企业知识库"系统学一遍，搭一个有评估指标的 agentic RAG（不是经典"检索 + 生成"管线）
+- **Phase 4（Week 15–17）**：给你的 agent 接上 evals / observability / 沙箱，并跟上 context rot、prompt injection 这些 2025–2026 前沿
 
 ---
 
@@ -105,8 +108,9 @@ outlines/agent-learning/
 ├── phase-0.md          ← Week 1 执行手册
 ├── phase-1.md          ← Week 2–3 执行手册
 ├── phase-2.md          ← Week 4–7 执行手册
-├── phase-3.md          ← Week 8–11 执行手册
-└── phase-4.md          ← Week 12–14 执行手册
+├── phase-3.md          ← Week 8–12 执行手册（含 Week 12 协议 mini-week）
+├── phase-3.5.md        ← Week 13–14 执行手册（企业 RAG 专题）
+└── phase-4.md          ← Week 15–17 执行手册
 
 notes/                  ← 你的学习笔记（自己创建）
 ├── phase-0/
@@ -119,7 +123,14 @@ notes/                  ← 你的学习笔记（自己创建）
 ├── phase-3/
 │   ├── research-agent-mastra/
 │   ├── research-agent-deepagents/
-│   └── hermes-skill-mvp/
+│   ├── hermes-skill-mvp/
+│   ├── protocols-comparison.md  ← MCP / ACP / A2A 横向对比
+│   └── protocols-demo/          ← ACP 或 A2A 最小 demo
+├── phase-3.5/
+│   ├── rag-concepts.md
+│   ├── hybrid-retrieval-hello/
+│   ├── enterprise-rag-agent/
+│   └── rag-evals/
 ├── phase-4/
 │   ├── evals/
 │   ├── observability/
