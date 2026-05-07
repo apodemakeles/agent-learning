@@ -1,6 +1,6 @@
 # Phase 1 · 手搓最小 Agent（Week 2–3）
 
-> 目标：用 TypeScript/Node 从零写一个 ≤300 行、真能跑 coding 任务的 mini-agent。两本 TS 教程并行跑，最后出自己的版本。
+> 目标：用 TypeScript/Node 从零写一个 ≤300 行、真能跑 coding 任务的 mini-agent。跟一篇 TS 博客手敲一遍 + 对照同作者 GitHub 仓库做工程化补强，最后出自己的版本。
 
 ---
 
@@ -8,7 +8,7 @@
 
 这是整条路径最关键的两周。Phase 0 是理论，Phase 2+ 是看别人怎么做——中间这 2 周是**你自己写一个能跑的**。写完之后，你后面看 Cline / Claude Code 源码才不会是"看不懂的魔法"，而是"哦他这块比我多做了 XX"。
 
-策略：**先跟 Kevin Yank，再对照 ivanleomk**。原因是 Kevin Yank 的博客文章结构像 Thorsten Ball 那种"从 0 一步步长出来"，最适合入门；ivanleomk 是工程化完整版，用来看"从手搓到 Claude Code 式结构"的桥梁。
+策略：**先跟 Ivan Leo 博客一行行敲，再对照同作者 GitHub 仓库**。Ivan Leo 这篇是 Thorsten Ball 思路在 TS 里的最干净复现：200 行不到、4 个工具一次性给齐，并且用通用 `@anthropic-ai/sdk`——国内第三方 Anthropic 兼容代理通过 `ANTHROPIC_BASE_URL` 一行就能接入，避免 Vertex/Bedrock 那种平台专用 SDK 的坑。博客文字版讲思路，作者同名 GitHub 仓库讲工程化（错误处理、目录组织、tool 抽象）——文字搞明白思路，仓库对照看工程化，是这两周的主线。
 
 ---
 
@@ -23,7 +23,7 @@
 ## 学习目标
 
 1. 能从零写一个 agent loop，包含：系统提示词、工具定义、tool_use/tool_result 往返、错误恢复
-2. 工具至少实现 4 个：`read_file` / `write_file` / `edit_file`（diff 方式）/ `bash`
+2. 工具至少实现 5 个：`read_file` / `list_files` / `create_file` / `edit_file`（字符串精确替换）/ `bash`（前 4 个跟 Ivan Leo 博客即得，`bash` 在 task 5 自己加）
 3. 能跑完一个小 refactor 任务（比如"把这个 JS 文件改成 TS 并加类型"）
 4. 理解"为什么 mini-swe-agent 100 行就能在 SWE-bench 拿 74%"
 
@@ -56,59 +56,97 @@
 
 ---
 
-### 任务 3：跟 Kevin Yank 的 TS 教程完整写一遍（5 小时，跨 2 天）
+### 任务 3：跟 Ivan Leo 的 TS 教程完整写一遍（5 小时，跨 2 天）
 
 - **类型**：核心编码
 - **时间**：5 h
-- **资源**：https://kevinyank.com/posts/how-to-build-an-agent-in-javascript/
+- **资源**：
+  - 主：https://ivanleo.com/blog/building-an-agent
+  - 辅（仅在卡壳时对照，不要先看）：https://github.com/ivanleomk/building-an-agent
+- **为什么换掉原来的 Kevin Yank**：那篇用 `@anthropic-ai/vertex-sdk`（Google Vertex 专用），国内第三方 Anthropic 兼容代理用不了；而且 URL 写"javascript"实际代码全是 TS，新手容易踩坑。Ivan Leo 这篇直接用通用 `@anthropic-ai/sdk`，配 `baseURL` 就能接第三方代理；TS 类型完整、200 行内 4 个工具一次到位。
 - **做什么**：
-  1. 新建 `notes/phase-1/mini-agent-v1/`，`pnpm init` / `npm init`
-  2. 装依赖：`@anthropic-ai/sdk`、`zod`、`tsx`
-  3. **完整抄一遍代码**——不是复制粘贴，而是跟着文章一行一行敲
-  4. 敲完后跑通：让 agent 读一个文件并总结
-  5. **关键**：理解每一段 code 在做什么，不懂就停下来问 Claude/GPT
+  1. 新建 `notes/phase-1/mini-agent-v1/`，用 `npm init -y` 或 `pnpm init`（也能用 `bun init -y`，文章原例用 Bun，但 Node 20+ 一样能跑，全 phase 后续工具链以 npm/pnpm 为准更稳）
+  2. 装依赖：`@anthropic-ai/sdk` `zod` `chalk` `tree-cli`（与博客一致）；如果用 Node 而非 Bun，再加 `tsx`、`dotenv`
+  3. **配置环境变量**（**国内代理关键**）：在项目根建 `.env`：
+     ```
+     ANTHROPIC_API_KEY=sk-xxx
+     ANTHROPIC_BASE_URL=https://your-anthropic-compatible-proxy.example.com
+     ```
+     初始化客户端时显式传 `baseURL`：
+
+     ```ts
+     import { Anthropic } from "@anthropic-ai/sdk"
+     const client = new Anthropic({
+       apiKey: process.env.ANTHROPIC_API_KEY,
+       baseURL: process.env.ANTHROPIC_BASE_URL, // 不传时 SDK 默认走 api.anthropic.com
+     })
+     ```
+
+     博客里写的是 `new Anthropic()`（默认从环境变量读 key 走官方 endpoint），你只要多传一个 `baseURL` 就能切到第三方代理，其他代码完全不用动
+  4. 跟博客四个小节 **一行行敲**（不复制粘贴）：
+     1. 捕获用户输入 + chalk 着色（`getUserInput` + `run` 主循环）
+     2. 接 Claude 单轮对话（`client.messages.create` + 把 user/assistant 推到 `conversations` 数组）
+     3. 加 `read_file` 工具：用 zod 定义 schema，`toJSONSchema` 转 JSON Schema 喂给 Claude，处理 `tool_use` / `tool_result` 回路（注意 `processUserInput` 这个布尔标志位的用法，理解它为什么必要）
+     4. 把 `list_files / create_file / edit_file` 三个工具补齐
+  5. 跑通最终验证：让 agent 读一个文件并总结、让 agent 改写一个本地小 .txt 文件
+  6. **关键约束**：不懂任何一段就停下来问 Claude/GPT，不要囫囵抄完；如果博客代码（截至 2025-07 发布）与最新 SDK 类型不符（比如 zod v4 的 `toJSONSchema` 导出位置变化），参考作者 GitHub 仓库当前版本修复
 - **产出**：
-  - `mini-agent-v1/` 第一版能跑，包含：
-    - `read_file` 工具
-    - `list_files` 工具
-    - 基本 agent loop
-  - 一个 commit：`feat: initial agent following Kevin Yank tutorial`
+  - `mini-agent-v1/` 第一版能跑，包含 4 个工具（`read_file / list_files / create_file / edit_file`） + 基本 agent loop
+  - 一个 commit：`feat: initial agent following Ivan Leo tutorial`
+  - `mini-agent-v1/NOTES.md` 开头记录"用了哪个第三方 Anthropic 兼容代理 + baseURL 形态是什么"（脱敏，别泄露 key 与具体 host）
 
 ---
 
 ## Week 3 任务清单
 
-### 任务 4：读 ivanleomk 的代码并对照改进（3 小时）
+### 任务 4：读 ivanleomk 仓库代码与博客对照（3 小时）
 
 - **类型**：代码阅读 + 重构
 - **时间**：3 h
-- **资源**：https://github.com/ivanleomk/building-an-agent
+- **资源**：
+  - 主：https://github.com/ivanleomk/building-an-agent （task 3 已经短暂用过）
+  - 速览（不实现）：https://ivanleo.com/blog/migrating-to-react-ink （作者后续文章，看演进方向）
+- **背景**：task 3 跟着博客文字版敲完之后，仓库里还藏着一些博客没展开的工程化细节——这一步专门把这些细节挖出来 port 进来。
 - **做什么**：
-  1. clone 下来看他的目录结构和分支
-  2. 重点对比：他怎么抽象 `Tool`？错误怎么处理？tool 结果怎么传回？
-  3. 把你觉得他比 Kevin Yank 版更好的地方**手动 port 到你的 mini-agent-v1**
+  1. clone 下来逐文件读，重点对比"博客文字版给出的样例代码" vs "仓库实际代码"在以下 4 方面的工程化差异：
+     - `Tool` 接口的抽象方式（zod schema 怎么转 JSON Schema、execute 函数签名、async/sync 处理）
+     - 工具执行错误如何捕获 + 怎么把错误结构化回填给 agent（博客里只是个 try/catch + `"Error executing tool"`，仓库里通常更细）
+     - `tool_use` / `tool_result` 在多轮里的状态管理（博客里的 `processUserInput` 标志位是否还能改进）
+     - 目录结构 / 模块拆分（博客里都堆在 `agent.ts` 一个文件里）
+  2. 把你觉得仓库版比博客版更好的设计**手动 port 到自己的 mini-agent-v1**——不要直接 clone 替换，要逐处复制并理解
+  3. 速览 *Building a Coding CLI with React Ink* 一文，**不实现**，只在笔记里记 1 行"接下来工程化的方向是什么"（task 4 不做，但脑子里有数）
 - **产出**：
-  - 一个 commit：`refactor: apply improvements from ivanleomk's approach`
-  - 在 `mini-agent-v1/NOTES.md` 里记下"我参考了他的 XX 设计因为 XXX"
+  - 一个 commit：`refactor: apply improvements from ivanleomk's repo`
+  - 在 `mini-agent-v1/NOTES.md` 加一节 `## 博客 vs 仓库的差异`，列至少 3 条具体改进点（每条说明：博客怎么写的 → 仓库怎么写的 → 你为什么决定 port）
 
 ---
 
-### 任务 5：加 4 个核心工具（3 小时）
+### 任务 5：补齐 bash 工具 + 强化错误处理（2 小时）
 
 - **类型**：编码
-- **时间**：3 h
-- **做什么**：在 `mini-agent-v1` 里实现：
-  1. `read_file(path)` — 已有
-  2. `write_file(path, content)` — 新增
-  3. `edit_file(path, old, new)` — 新增，基于字符串精确替换
-  4. `bash(command)` — 新增，用 `child_process.execSync` 或 `execa`
-- **注意事项**：
-  - `edit_file` 要在 old 找不到时返回明确错误，让 agent 能自我纠正
-  - `bash` 必须加超时（30s）
-  - 所有工具返回必须是字符串，超长要截断
+- **时间**：2 h（原计划 3 h；4 个工具中 `read_file / list_files / create_file / edit_file` 已在 task 3 跟博客敲出，task 5 只剩 `bash` + 把博客版工具的错误处理做硬）
+- **做什么**：
+  1. **新增 `bash(command)` 工具**：
+     - 用 `child_process.exec`（promisify 后异步包装，参考 task 3 里 `list_files` 已经在用 `execAsync` 的写法）
+     - 加 30s 超时（`{ timeout: 30_000 }`）
+     - 合并 stdout + stderr 一起返回（agent 经常需要 stderr 做错误判断）
+     - 超时或非零退出码也要把已有输出回填，不要直接抛异常吃掉信息
+  2. **强化 `edit_file` 错误信号**：博客版 `edit_file` 在 `old_string` 找不到时会静默 `replace`（结果是文件原样），agent 会以为修改成功——这是个坑。改成：找不到时返回结构化错误字符串，例如：
+
+     ```
+     ERROR: old_string not found in <path>.
+     Hint: the file currently contains (first 500 chars): <truncated content>
+     ```
+
+     这样 agent 看到 tool_result 就知道要先 `read_file` 再重试
+  3. **所有工具加返回值长度上限**（建议 8 KB / 8000 字符），超出后追加 `\n... [truncated, total <N> chars]`——避免一次 `read_file` 大文件就把上下文撑爆
+  4. **手动测试两轮**：
+     1. "在当前目录建一个 hello.txt 写入 hello world"（验 create_file）
+     2. "用 bash 跑 ls 并告诉我有几个 .ts 文件"（验 bash + agent 能解析 stdout）
+     3. 故意触发 `edit_file` 错误：让 agent 改一段不存在的字符串，观察它能否根据错误信息自动 `read_file` 重试
 - **产出**：
-  - commit：`feat: add write/edit/bash tools`
-  - 手动测试：让 agent"在当前目录建一个 hello.txt 写入 hello world"
+  - commit：`feat: add bash tool and harden tool error handling`
+  - 在 `mini-agent-v1/NOTES.md` 加一段记录：`edit_file` 改成结构化错误前后 agent 行为差别（特别是它有没有学会"先 read 再 edit"）
 
 ---
 
@@ -167,7 +205,7 @@
 ## 阶段产出物清单
 
 - [ ] `notes/phase-1/mini-agent-v1/` 是一个可运行的 TS 项目
-- [ ] 包含 4 个工具：`read_file / write_file / edit_file / bash`
+- [ ] 包含 5 个工具：`read_file / list_files / create_file / edit_file / bash`
 - [ ] 能跑通"把 JS 改成 TS"任务，有 transcript 存档
 - [ ] `NOTES.md` 至少 3 节：参考来源、真实任务观察、mini-swe-agent 启发
 - [ ] 至少 5 次 git commit，能看出演进过程
