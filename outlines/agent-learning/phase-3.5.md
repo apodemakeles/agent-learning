@@ -1,4 +1,4 @@
-# Phase 3.5 · 企业 RAG 与 Agentic Retrieval（Week 13–14）
+# Phase 3.5 · 企业 RAG 与 Agentic Retrieval（Week 14–15）
 
 > 目标：把"agent + 企业知识库"这个 95% 的真实业务需求系统学一遍。从经典 RAG 工程（chunking / 多源检索 / 重排序 / 评估）到 agentic RAG（agent 自己决定检索什么、什么时候检、要不要再检一轮），最后用 TS 做一个**有评估指标**的小型企业 RAG agent。
 
@@ -20,7 +20,7 @@
 ## 前置条件与时间预算
 
 - **前置**：Phase 3 自检全过；`mini-agent-v2` 能用；理解 tool calling
-- **时间**：Week 13–14，每周 6h，合计 ≈ 12h（可弹性扩到 16h）
+- **时间**：Week 14–15，每周 6h，合计 ≈ 12h（可弹性扩到 16h）
 - **交付**：
   - `notes/phase-3.5/rag-concepts.md`：RAG / agentic RAG 概念笔记
   - `notes/phase-3.5/enterprise-rag-agent/`：能跑的 TS 企业 RAG agent
@@ -38,7 +38,7 @@
 
 ---
 
-## Week 13 · RAG 工程基础 + agentic RAG 心智
+## Week 14 · RAG 工程基础 + agentic RAG 心智
 
 ### 任务 1：经典 RAG vs Agentic RAG（1.5 小时）
 
@@ -116,12 +116,12 @@
 
 ---
 
-## Week 14 · Agentic RAG 实战 + 评估
+## Week 15 · Agentic RAG 实战 + 评估
 
 ### 任务 6：决定技术栈（0.5 小时）
 
 - **类型**：决策
-- **做什么**：从下面三个 TS 路线**选一个**做 Week 14 的核心项目：
+- **做什么**：从下面三个 TS 路线**选一个**做 Week 15 的核心项目：
   - **路线 A（推荐）**：LangChain.js + LangGraph.js — 生态最全、agentic 模式最成熟。https://js.langchain.com/docs/tutorials/rag/
   - **路线 B**：Mastra RAG — 你 Phase 3 已经熟，少切换成本。https://mastra.ai/docs/rag/overview
   - **路线 C（更接近 mini-agent 哲学）**：原生 Anthropic SDK + 自己写检索循环 — 最少抽象、最大掌控
@@ -163,7 +163,7 @@
 
 - **类型**：核心编码 + 数据工作
 - **做什么**：
-  1. **手写 ≥10 个问答对**（基于你 Week 14 用的那批文档），每条包含：
+  1. **手写 ≥10 个问答对**（基于你 Week 15 用的那批文档），每条包含：
      - `question`
      - `ground_truth_answer`（你认为的标准答案）
      - `ground_truth_chunk_ids`（应该被检索到的 chunk）
@@ -184,7 +184,7 @@
 ### 任务 10：把 RAG 接成 mini-agent-v2 的工具（可选, 1.5 小时）
 
 - **类型**：整合
-- **做什么**：如果时间允许，把 Week 14 搭的 enterprise-rag-agent 包装成 mini-agent-v2 的一个新工具 `search_kb(query)`，让 mini-agent 在 coding 任务中也能查"项目知识库"
+- **做什么**：如果时间允许，把 Week 15 搭的 enterprise-rag-agent 包装成 mini-agent-v2 的一个新工具 `search_kb(query)`，让 mini-agent 在 coding 任务中也能查"项目知识库"
 - **产出**：`mini-agent-v2` 增加 `search_kb` 工具，README 更新
 
 ---

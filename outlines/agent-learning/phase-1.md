@@ -6,7 +6,7 @@
 
 ## 本阶段定位（30 秒读完）
 
-这是整条路径最关键的两周。Phase 0 是理论，Phase 2+ 是看别人怎么做——中间这 2 周是**你自己写一个能跑的**。写完之后，你后面看 Cline / Claude Code 源码才不会是"看不懂的魔法"，而是"哦他这块比我多做了 XX"。
+这是整条路径最关键的两周。Phase 0 是理论，Phase 2+ 是看别人怎么做——中间这 2 周是**你自己写一个能跑的**。写完之后，你后面看 Claude Code 源码 / OpenClaw 教程才不会是"看不懂的魔法"，而是"哦他这块比我多做了 XX"。
 
 策略：**先跟 Ivan Leo 博客一行行敲，再对照同作者 GitHub 仓库**。Ivan Leo 这篇是 Thorsten Ball 思路在 TS 里的最干净复现：200 行不到、4 个工具一次性给齐，并且用通用 `@anthropic-ai/sdk`——国内第三方 Anthropic 兼容代理通过 `ANTHROPIC_BASE_URL` 一行就能接入，避免 Vertex/Bedrock 那种平台专用 SDK 的坑。博客文字版讲思路，作者同名 GitHub 仓库讲工程化（错误处理、目录组织、tool 抽象）——文字搞明白思路，仓库对照看工程化，是这两周的主线。
 
@@ -224,6 +224,6 @@
 
 ## 过渡到 Phase 2
 
-Phase 2 要你读 Cline / opencode / Claude Code 源码，跑 Datawhale `hello-claw`，并把你的 mini-agent 升级到支持 subagent 和 `/compact`。
+Phase 2 要你吃透 Claude Code 的所有扩展点（subagent / skill / hook / plugin）+ 一份完整逆向，跟完 Datawhale `hello-claw` 构建篇，并把你的 mini-agent 升级到支持 subagent 和 `/compact`。
 
 进入 [`phase-2.md`](./phase-2.md)。

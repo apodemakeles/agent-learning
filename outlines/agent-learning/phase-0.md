@@ -12,7 +12,7 @@
 
 ## 前置条件与时间预算
 
-- **前置**：你已经用过 Claude Code / Cursor / Cline 之一做过一些日常开发；会调 OpenAI / Anthropic 的 Chat API
+- **前置**：你已经用过 Claude Code / Cursor 做过一些日常开发；会调 OpenAI / Anthropic 的 Chat API
 - **时间**：6–8 小时
 - **节奏建议**：3 天读核心 + 1 天看视频 + 1 天写笔记
 

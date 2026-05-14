@@ -1,4 +1,4 @@
-# Phase 3 · 通用 Agent + 框架对比 + Hermes 精读（Week 8–12）
+# Phase 3 · 通用 Agent + 框架对比 + Hermes 精读（Week 9–13）
 
 > 目标：从 coding 场景抽身，理解 Mastra / deepagentsjs / Stagehand 等 TS 原生 agent 框架；精读 Hermes Agent 源码与设计思想；动手写一个简化版 Hermes SKILL 闭环。
 
@@ -19,7 +19,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 ## 前置条件与时间预算
 
 - **前置**：Phase 2 自检全过；`mini-agent-v2` 能用
-- **时间**：Week 8–12，每周 5–8h（Week 12 是 mini-week 只 5h），合计 ≈ 35h
+- **时间**：Week 9–13，每周 5–8h（Week 13 是 mini-week 只 5h），合计 ≈ 35h
 - **交付**：
   - `notes/phase-3/research-agent-mastra/`（Mastra 版研究 agent）
   - `notes/phase-3/research-agent-deepagents/`（deepagentsjs 版）
@@ -39,7 +39,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 
 ---
 
-## Week 8 · 框架选型建立心智
+## Week 9 · 框架选型建立心智
 
 ### 任务 1：Harrison Chase《How to think about agent frameworks》（1 小时）
 
@@ -89,7 +89,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 
 ---
 
-## Week 9 · deepagents 精读与 TS 实战
+## Week 10 · deepagents 精读与 TS 实战
 
 ### 任务 6：deepagents 原博 + 仓库（2 小时）
 
@@ -128,7 +128,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 
 ---
 
-## Week 10 · Mastra + Stagehand
+## Week 11 · Mastra + Stagehand
 
 ### 任务 9：Mastra 官方 90 分钟课（2 小时）
 
@@ -174,7 +174,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 
 ---
 
-## Week 11 · Hermes Agent 精读 + SKILL MVP
+## Week 12 · Hermes Agent 精读 + SKILL MVP
 
 ### 任务 13：Hermes 官方（3 小时）
 
@@ -232,7 +232,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 
 ---
 
-## Week 12 · 协议与互操作性（mini-week, 5h）
+## Week 13 · 协议与互操作性（mini-week, 5h）
 
 > 这周不写大代码、不读大论文。目的只有一个：**建立 agent 通信协议层的坐标系**，知道 2026 年地图上有哪几面旗、各自插在哪。
 >
@@ -241,7 +241,7 @@ Phase 2 教你理解 coding agent，Phase 3 教你通用 agent。重点项目：
 ### 任务 17：MCP 复盘（0.5 小时）
 
 - **类型**：复盘
-- **做什么**：你前面已经在 Phase 2（hello-claw / Cline）和 Phase 4（MCP 安全）多次接触 MCP，这里只做一件事——**用一句话写下"MCP 是什么、解决什么、不解决什么"**
+- **做什么**：你前面已经在 Phase 2（hello-claw / Claude Code 插件里打包 MCP server）和 Phase 4（MCP 安全）多次接触 MCP，这里只做一件事——**用一句话写下"MCP 是什么、解决什么、不解决什么"**
 - **产出**：`notes/phase-3/protocols-comparison.md` 第一节 `## MCP（tool 层）`
 - **关键认知**：MCP 是 **agent ↔ tool / data source** 的标准化，**不是** agent ↔ agent
 
